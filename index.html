@@ -1,10 +1,574 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>Codebase</title>
-  </head>
-  <body>
-    <h1>Codebase.lk is live</h1>
-    <p>If you see this, GitHub Pages is working.</p>
-  </body>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Code Base | Software Studio</title>
+
+  <!-- FAVICON (tab icon) -->
+  <link rel="icon" type="image/png"
+    href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAZlBMVEUAAAD///////////////////////////////////////////////////////////////////////////////////////////////////////////////////8m0o2nAAAAIHRSTlMAAQIDBAYICQoLDA0ODxAREhMUFRYXGBobHB0eH9A3g+0AAABASURBVBgZBcEJDoAgDAXQqf//ZrY0kKQk8iQWwTnQ4cGmU0lq3mY0m0mHnJm9nIuOZr2S7G0o7QmQbqk3k2c4f4g8AAJc8Cw8p9J2IAAAAASUVORK5CYII=">
+
+  <style>
+    :root{
+      --bg: #070a12;
+      --text: rgba(255,255,255,.9);
+      --muted: rgba(255,255,255,.65);
+      --stroke: rgba(255,255,255,.16);
+      --glass: rgba(255,255,255,.08);
+      --glass2: rgba(255,255,255,.12);
+      --shadow: 0 24px 60px rgba(0,0,0,.45);
+      --radius: 20px;
+    }
+
+    *{ box-sizing:border-box; margin:0; padding:0; }
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      overflow-x:hidden;
+    }
+
+    /* ---- Liquid background blobs ---- */
+    .bg{
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: radial-gradient(1200px 900px at 10% 10%, rgba(99,102,241,.35), transparent 55%),
+                  radial-gradient(900px 700px at 90% 20%, rgba(34,211,238,.22), transparent 55%),
+                  radial-gradient(1100px 900px at 60% 90%, rgba(236,72,153,.25), transparent 55%),
+                  radial-gradient(1200px 900px at 40% 60%, rgba(16,185,129,.18), transparent 60%);
+      filter: saturate(120%);
+    }
+    .blob{
+      position:absolute;
+      width: 520px;
+      height: 520px;
+      border-radius: 999px;
+      background: conic-gradient(from 180deg, rgba(99,102,241,.7), rgba(34,211,238,.6), rgba(236,72,153,.6), rgba(16,185,129,.55), rgba(99,102,241,.7));
+      filter: blur(22px);
+      opacity: .55;
+      transform: translate3d(0,0,0);
+      animation: floaty 10s ease-in-out infinite;
+      mix-blend-mode: screen;
+    }
+    .blob.b1{ top:-120px; left:-140px; animation-duration: 12s; }
+    .blob.b2{ top:120px; right:-180px; width: 620px; height: 620px; animation-duration: 14s; animation-direction: reverse; }
+    .blob.b3{ bottom:-220px; left:35%; width: 700px; height: 700px; animation-duration: 16s; }
+    @keyframes floaty{
+      0%{ transform: translate(0,0) scale(1); }
+      50%{ transform: translate(30px,-24px) scale(1.06); }
+      100%{ transform: translate(0,0) scale(1); }
+    }
+
+    /* ---- Subtle noise layer (makes glass feel real) ---- */
+    .noise{
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events:none;
+      opacity:.12;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+
+    /* ---- Layout ---- */
+    .wrap{ max-width: 1160px; margin: 0 auto; padding: 26px 18px 70px; }
+
+    /* ---- Glass card base ---- */
+    .glass{
+      background: linear-gradient( to bottom right, rgba(255,255,255,.12), rgba(255,255,255,.06) );
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    /* ---- Navbar ---- */
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding: 14px 16px;
+      position: sticky;
+      top: 12px;
+      z-index: 20;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+    .logo{
+      width: 38px; height: 38px;
+      border-radius: 12px;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,.35), transparent 40%),
+                  linear-gradient(135deg, rgba(99,102,241,.85), rgba(34,211,238,.7));
+      border: 1px solid rgba(255,255,255,.22);
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo::after{
+      content:"";
+      position:absolute;
+      inset:-50%;
+      background: conic-gradient(from 90deg, rgba(255,255,255,.15), transparent 35%, rgba(255,255,255,.22), transparent 65%);
+      animation: sheen 4.5s linear infinite;
+    }
+    @keyframes sheen{
+      0%{ transform: rotate(0deg); }
+      100%{ transform: rotate(360deg); }
+    }
+    .links{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .links a{
+      text-decoration:none;
+      color: var(--muted);
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      transition: .25s ease;
+    }
+    .links a:hover{
+      color: var(--text);
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      transform: translateY(-1px);
+    }
+    .cta{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .btn{
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      transition: .25s ease;
+      font-weight: 650;
+    }
+    .btn:hover{
+      background: rgba(255,255,255,.10);
+      transform: translateY(-1px);
+    }
+    .btn.primary{
+      background: linear-gradient(135deg, rgba(99,102,241,.9), rgba(34,211,238,.75));
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 14px 40px rgba(99,102,241,.22);
+    }
+    .btn.primary:hover{
+      filter: brightness(1.06);
+    }
+
+    /* ---- Hero ---- */
+    .hero{
+      margin-top: 18px;
+      padding: 34px;
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .hero h1{
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1.05;
+      letter-spacing: -.8px;
+      margin-bottom: 14px;
+    }
+    .hero p{
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.7;
+      max-width: 56ch;
+    }
+    .hero-actions{
+      margin-top: 18px;
+      display:flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items:center;
+    }
+
+    .mini-stats{
+      padding: 18px;
+      display:grid;
+      gap: 12px;
+      height: 100%;
+    }
+    .stat{
+      padding: 14px 14px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+    }
+    .stat .k{
+      font-size: 20px;
+      font-weight: 850;
+      letter-spacing: -.3px;
+    }
+    .stat .t{
+      color: var(--muted);
+      margin-top: 6px;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+
+    /* ---- Section titles ---- */
+    .section{ margin-top: 18px; padding: 28px; }
+    .title{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .title h2{
+      font-size: 22px;
+      letter-spacing: -.3px;
+    }
+    .title p{
+      color: var(--muted);
+      font-size: 14px;
+      max-width: 60ch;
+      line-height: 1.5;
+    }
+
+    /* ---- Cards grid ---- */
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .card{
+      padding: 18px;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      transition: .25s ease;
+      min-height: 140px;
+    }
+    .card:hover{
+      transform: translateY(-3px);
+      background: rgba(255,255,255,.07);
+      border-color: rgba(255,255,255,.20);
+    }
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .dot{
+      width: 8px;
+      height: 8px;
+      border-radius: 99px;
+      background: rgba(34,211,238,.9);
+      box-shadow: 0 0 0 6px rgba(34,211,238,.12);
+    }
+    .card h3{
+      font-size: 16px;
+      margin-bottom: 10px;
+      letter-spacing: -.2px;
+    }
+    .card p{
+      color: var(--muted);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* ---- Testimonials ---- */
+    .quote{
+      position: relative;
+      overflow: hidden;
+    }
+    .quote::after{
+      content:"";
+      position:absolute;
+      inset:-60%;
+      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.10), transparent 40%),
+                  radial-gradient(circle at 70% 70%, rgba(34,211,238,.10), transparent 45%);
+      filter: blur(8px);
+      opacity:.8;
+    }
+    .quote > *{ position: relative; z-index: 1; }
+
+    /* ---- Contact ---- */
+    .contact{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+    }
+    label{ color: var(--muted); font-size: 12px; }
+    input, textarea{
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.18);
+      color: var(--text);
+      outline: none;
+      transition: .2s ease;
+    }
+    input:focus, textarea:focus{
+      border-color: rgba(34,211,238,.55);
+      box-shadow: 0 0 0 4px rgba(34,211,238,.12);
+    }
+    textarea{ min-height: 120px; resize: vertical; }
+
+    /* ---- Footer ---- */
+    footer{
+      margin-top: 18px;
+      padding: 18px;
+      text-align:center;
+      color: rgba(255,255,255,.55);
+      font-size: 13px;
+    }
+
+    /* ---- Responsive ---- */
+    @media (max-width: 940px){
+      .hero{ grid-template-columns: 1fr; }
+      .grid{ grid-template-columns: 1fr; }
+      .contact{ grid-template-columns: 1fr; }
+      header.nav{ top: 10px; }
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce){
+      .blob, .logo::after{ animation: none !important; }
+      *{ scroll-behavior: auto; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg">
+    <div class="blob b1"></div>
+    <div class="blob b2"></div>
+    <div class="blob b3"></div>
+  </div>
+  <div class="noise"></div>
+
+  <div class="wrap">
+
+    <!-- NAV -->
+    <header class="nav glass">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div style="font-size:14px; opacity:.85; font-weight:800;">Code Base</div>
+          <div style="font-size:12px; color:rgba(255,255,255,.6); margin-top:2px;">Software Studio</div>
+        </div>
+      </div>
+
+      <div class="links" role="navigation" aria-label="Primary">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#testimonials">Testimonials</a>
+        <a href="#contact">Contact</a>
+      </div>
+
+      <div class="cta">
+        <button class="btn" onclick="document.getElementById('contact').scrollIntoView({behavior:'smooth'})">
+          Talk to us
+        </button>
+        <button class="btn primary" onclick="alert('Demo only: connect this to your real booking form/email.')">
+          Get a quote
+        </button>
+      </div>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero glass" aria-label="Hero">
+      <div>
+        <div class="badge">
+          <span class="dot"></span>
+          Modern • Secure • Scalable
+        </div>
+
+        <h1>Liquid-glass design.<br/>Serious engineering.</h1>
+        <p>
+          Code Base builds fast, secure web apps and backend systems that don’t collapse in production.
+          Clean UI, solid architecture, and performance that actually matters.
+        </p>
+
+        <div class="hero-actions">
+          <button class="btn primary" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">
+            Explore services
+          </button>
+          <button class="btn" onclick="document.getElementById('work').scrollIntoView({behavior:'smooth'})">
+            View work
+          </button>
+          <span style="color:rgba(255,255,255,.55); font-size:13px;">No gimmicks. Just results.</span>
+        </div>
+      </div>
+
+      <aside class="mini-stats glass" style="box-shadow:none; border:none; background:transparent;">
+        <div class="stat">
+          <div class="k">⚡ Fast Delivery</div>
+          <div class="t">MVPs in weeks — not months of excuses.</div>
+        </div>
+        <div class="stat">
+          <div class="k">🔒 Security First</div>
+          <div class="t">Auth, roles, data safety, and sane defaults.</div>
+        </div>
+        <div class="stat">
+          <div class="k">📈 Scale Ready</div>
+          <div class="t">APIs and systems that don’t break at 10k users.</div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- SERVICES -->
+    <section id="services" class="section glass">
+      <div class="title">
+        <h2>Services</h2>
+        <p>Everything you need to ship a real product — from UI to backend to deployment.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Web Apps</div>
+          <h3>Modern Frontends</h3>
+          <p>Responsive UI, clean components, and UX that doesn’t frustrate users.</p>
+        </div>
+
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Backend</div>
+          <h3>APIs & Microservices</h3>
+          <p>REST/gRPC, databases, caching, and architecture that stays maintainable.</p>
+        </div>
+
+        <div class="card">
+          <div class="badge"><span class="dot"></span> DevOps</div>
+          <h3>Deploy & Monitor</h3>
+          <p>Docker, CI/CD, cloud deploy, logs, metrics — so you can sleep at night.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORK -->
+    <section id="work" class="section glass">
+      <div class="title">
+        <h2>Demo Work</h2>
+        <p>Replace these with your real projects. Don’t lie. Show real screenshots when you have them.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Portal</div>
+          <h3>Citizen Access Portal</h3>
+          <p>Unified identity + access + service requests with role-based control and audit trails.</p>
+        </div>
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Commerce</div>
+          <h3>Microservice E-commerce</h3>
+          <p>Order → payment → notifications with async messaging and secure authentication.</p>
+        </div>
+        <div class="card">
+          <div class="badge"><span class="dot"></span> Management</div>
+          <h3>Education Management</h3>
+          <p>Students, courses, schedules, results — built for real workflows, not theory.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="testimonials" class="section glass">
+      <div class="title">
+        <h2>Testimonials</h2>
+        <p>Keep it short and believable. If it sounds fake, it is fake.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card quote">
+          <h3>“Fast delivery and clean code.”</h3>
+          <p>We got an MVP quickly and it didn’t fall apart after launch.</p>
+          <p style="margin-top:10px; color:rgba(255,255,255,.55); font-size:12px;">— Client, Startup</p>
+        </div>
+        <div class="card quote">
+          <h3>“Security was handled properly.”</h3>
+          <p>Auth, roles, and data rules were built in from day one.</p>
+          <p style="margin-top:10px; color:rgba(255,255,255,.55); font-size:12px;">— Client, SME</p>
+        </div>
+        <div class="card quote">
+          <h3>“Smooth UI and great UX.”</h3>
+          <p>The interface looks premium and users understood it instantly.</p>
+          <p style="margin-top:10px; color:rgba(255,255,255,.55); font-size:12px;">— Client, Team Lead</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section glass">
+      <div class="title">
+        <h2>Contact</h2>
+        <p>This form is demo. For real use, connect it to email/API (Formspree, backend endpoint, etc.).</p>
+      </div>
+
+      <div class="contact">
+        <div class="card" style="min-height:auto;">
+          <h3 style="margin-bottom:10px;">Company Details</h3>
+          <p style="color:rgba(255,255,255,.65); line-height:1.7;">
+            📧 contact@codebase.lk<br/>
+            📍 Sri Lanka<br/>
+            🕒 Mon–Sat: 9.00–6.00<br/>
+            💬 Available for: Web Apps, APIs, DevOps
+          </p>
+        </div>
+
+        <div class="card" style="min-height:auto;">
+          <form onsubmit="event.preventDefault(); alert('Demo only: connect form to backend/email.');">
+            <div class="field">
+              <label>Your Name</label>
+              <input required placeholder="Enter your name" />
+            </div>
+
+            <div class="field" style="margin-top:12px;">
+              <label>Email</label>
+              <input type="email" required placeholder="you@example.com" />
+            </div>
+
+            <div class="field" style="margin-top:12px;">
+              <label>Message</label>
+              <textarea required placeholder="Tell us what you want to build..."></textarea>
+            </div>
+
+            <div style="margin-top:12px; display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn primary" type="submit">Send message</button>
+              <button class="btn" type="button" onclick="window.scrollTo({top:0, behavior:'smooth'})">Back to top</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="glass" style="box-shadow:none; border-color:rgba(255,255,255,.10); background:rgba(255,255,255,.05);">
+      © 2026 Code Base — Liquid Glass UI, Real Engineering.
+    </footer>
+
+  </div>
+</body>
 </html>
