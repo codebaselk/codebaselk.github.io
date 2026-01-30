@@ -13,7 +13,7 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #000000 0%, #434343 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -31,6 +31,15 @@
             max-width: 600px;
             width: 100%;
             animation: fadeIn 0.8s ease-in;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: 800;
+            color: #000000;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+            text-transform: uppercase;
         }
 
         @keyframes fadeIn {
@@ -61,7 +70,7 @@
 
         h1 {
             font-size: 2.5em;
-            color: #667eea;
+            color: #000000;
             margin-bottom: 20px;
             font-weight: 700;
         }
@@ -119,14 +128,14 @@
         }
 
         .btn-phone {
-            background: #667eea;
+            background: #333333;
             color: white;
         }
 
         .btn-phone:hover {
-            background: #5568d3;
+            background: #000000;
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         }
 
         .spinner {
@@ -134,7 +143,7 @@
             width: 50px;
             height: 50px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
+            border-top: 4px solid #000000;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -166,6 +175,7 @@
 </head>
 <body>
     <div class="container">
+        <div class="logo">CodeBase</div>
         <div class="icon">🚧</div>
         <h1>Under Maintenance</h1>
         <p class="subtitle">
